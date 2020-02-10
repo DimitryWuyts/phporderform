@@ -35,6 +35,23 @@ if(isset($_GET["food"]) && $_GET["food"] == 0){
         ['name' => 'Club Salmon', 'price' => 5]
     ];
 }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $alerts = [];
+    $errors = [];
+
+//email
+    $email = input($_POST["email"]);
+//if empty, alert
+    if (empty($email)) {
+        $alerts[] = "Please fill in your <a href='#email' class='alert-link'>E-mail</a>!";
+    } else {
+        //if invalid email, error
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "<a href='#email' class='alert-link'>$email</a> is not a valid email addres!";
+        }
+    }
+}
 $totalValue = 0;
 
  require 'form-view.php';
