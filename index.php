@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         //if invalid email, error
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "<a href='#email' class='alert-link'>$email</a> is not a valid email addres!";
+            $errors[] = "<a href='#email' class='alert-link'>$email</a> is not a valid email address!";
         }
     }
 }
