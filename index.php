@@ -2,6 +2,7 @@
 
 //strict type
 declare(strict_types=1);
+
 //enable errors
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
@@ -20,7 +21,6 @@ function whatIsHappening() {
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
-$totalValue = 0;
 
 //products with price
 if(isset($_GET["food"]) && $_GET["food"] == 0){
@@ -39,15 +39,17 @@ if(isset($_GET["food"]) && $_GET["food"] == 0){
         ['name' => 'Club Salmon', 'price' => 5]
     ];
 }
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $alerts = [];
     $errors = [];
 
 //email
-    $email = input($_POST["email"]);
+    $email = test_input($_POST["email"]);
 
-//if empty, alert
+    //if empty, alert
     if (empty($email)) {
         $alerts[] = "Please fill in your <a href='#email' class='alert-link'>E-mail</a>!";
     } else {
@@ -57,34 +59,107 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-//address
-    $street = input($_POST["street"]);
-    $streetNumber = input($_POST["streetnumber"]);
-    $city = input($_POST["city"]);
-    $zipCode = input($_POST["zipcode"]);
+    //address
+    $street = test_input($_POST["street"]);
+    $streetnumber = test_input($_POST["streetnumber"]);
+    $city = test_input($_POST["city"]);
+    $zipcode = test_input($_POST["zipcode"]);
 
-//making sure address is valid
+    //making sure address is valid
     if (empty($street)) {
         $alerts[] = "Please fill in your <a href='#street' class='alert-link'>street</a>!";
     }
+
     if (empty($streetnumber)) {
         $alerts[] = "Please fill in your <a href='#streetnumber' class='alert-link'>street number</a>!";
     } else {
         if (!is_numeric($streetnumber)) {
-            $errors[] = "<a href='#streetnumber' class='alert-link'>Street Number</a> only accepts numbers!";
-        }
-        if (empty($city)) {
-            $alerts[] = "Please fill in your <a href='#city' class='alert-link'>city</a>!";
-        }
-
-        if (empty($zipcode)) {
-            $alerts[] = "Please fill in your <a href='#zipcode' class='alert-link'>zipcode</a>!";
-        } else {
-            if (!is_numeric($zipcode)) {
-                $errors[] = "<a href ='#zipcode' class='alert-link'>Zipcode</a> only accepts numbers!";
-            }
+            $errors[] = "<a href='#streetnumber' class='alert-link'>Street Number</a> only numbers!";
         }
     }
-}
-require 'form-view.php';
 
+    if (empty($city)) {
+        $alerts[] = "Please fill in your <a href='#city' class='alert-link'>city</a>!";
+    }
+
+    if (empty($zipcode)) {
+        $alerts[] = "Please fill in your <a href='#zipcode' class='alert-link'>zipcode</a>!";
+    } else {
+        if (!is_numeric($zipcode)) {
+            $errors[] = "<a href ='#zipcode' class='alert-link'>Zipcode</a> only numbers!";
+        }
+
+    }
+//making sure they order
+
+    $checked = [];
+
+    if (!empty($_POST["products"])){
+        $checked = $_POST["products"];
+    }
+
+    if (empty($checked)){
+        $errors[] = "You didn't <a href ='#products' class='alert-link'>order</a> something";
+    }
+
+
+    if (empty($alerts) && empty($errors)) {
+        echo ("<div class='alert alert-success text-center' role='alert'><h4 class='alert-heading'>yay</h4>
+           <p>You have placed your order!</p></div>");
+        header("Location: " . $_SERVER['REQUEST_URI']);
+    }
+
+}
+
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+ //session variables
+$street = "";
+$streetNumber = "";
+$city = "";
+$zipCode = "";
+$email = "";
+
+if (!empty($_POST)) {
+    $_SESSION["email"] = $_POST["email"];
+    $_SESSION["street"] = $_POST["street"];
+    $_SESSION["streetnumber"] = $_POST["streetnumber"];
+    $_SESSION["city"] = $_POST["city"];
+    $_SESSION["zipcode"] = $_POST["zipcode"];
+}
+
+if (!empty($_SESSION["email"])) {
+    $email = $_SESSION["email"];
+}
+
+if (!empty($_SESSION["street"])) {
+    $street = $_SESSION["street"];
+}
+if (!empty($_SESSION["streetnumber"])) {
+    $streetNumber = $_SESSION["streetnumber"];
+}
+if (!empty($_SESSION["city"])) {
+    $city = $_SESSION["city"];
+}
+if (!empty($_SESSION["zipcode"])) {
+    $zipCode = $_SESSION["zipcode"];
+}
+
+if (!empty($errors)){
+    foreach ($errors as $error){
+        echo ("<div class='alert alert-danger' role='alert'>" . $error . "</div>");
+    }
+}
+
+if (!empty($alerts)){
+    foreach ($alerts as $alert){
+        echo ("<div class='alert alert-warning' role='alert'>" . $alert . "</div>");
+    }
+}
+
+require 'form-view.php';
