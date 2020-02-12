@@ -40,7 +40,6 @@ if(isset($_GET["food"]) && $_GET["food"] == 0){
     ];
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $alerts = [];
@@ -104,9 +103,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if (empty($alerts) && empty($errors)) {
-        echo ("<div class='alert alert-success text-center' role='alert'><h4 class='alert-heading'>yay</h4>
-           <p>You have placed your order!</p></div>");
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        echo ("<div class='alert alert-success text-center' role='alert'>
+           <p class='alert-heading'>You have placed your <a href ='#products' class='alert-link'>order</a></p></div>");
+
     }
 
 }
@@ -132,11 +131,9 @@ if (!empty($_POST)) {
     $_SESSION["city"] = $_POST["city"];
     $_SESSION["zipcode"] = $_POST["zipcode"];
 }
-
 if (!empty($_SESSION["email"])) {
     $email = $_SESSION["email"];
 }
-
 if (!empty($_SESSION["street"])) {
     $street = $_SESSION["street"];
 }
@@ -149,17 +146,38 @@ if (!empty($_SESSION["city"])) {
 if (!empty($_SESSION["zipcode"])) {
     $zipCode = $_SESSION["zipcode"];
 }
-
 if (!empty($errors)){
     foreach ($errors as $error){
         echo ("<div class='alert alert-danger' role='alert'>" . $error . "</div>");
     }
 }
-
 if (!empty($alerts)){
     foreach ($alerts as $alert){
         echo ("<div class='alert alert-warning' role='alert'>" . $alert . "</div>");
     }
+}
+//create cookies
+
+if (!isset($_COOKIE["sum"])){
+    if(!empty($checked)){
+        $totalValue = array_sum($checked);
+        setcookie("sum", strval($totalValue), time()+(365*24*60*60));
+    }
+    else{
+        $totalValue = '0';
+        setcookie("sum", strval($totalValue), time()+(365*24*60*60));
+    }
+}
+else{
+    if (!empty($checked)){
+        $totalValue = $_COOKIE["sum"] + array_sum($checked);
+        setcookie("sum", strval($totalValue), time()+(365*24*60*60));
+    }
+    else{
+        $totalValue = $_COOKIE["sum"];
+        setcookie("sum", strval($totalValue), time()+(365*24*60*60));
+    }
+
 }
 
 require 'form-view.php';

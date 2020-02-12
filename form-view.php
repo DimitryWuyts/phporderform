@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?php echo $streetnumber ?>">
+                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?php echo $streetNumber ?>">
                 </div>
             </div>
             <div class="form-row">
@@ -51,7 +51,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo $zipcode ?>">
+                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo $zipCode ?>">
                 </div>
             </div>
         </fieldset>
@@ -70,11 +70,5 @@
 
     <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
 </div>
-
-<style>
-    footer {
-        text-align: center;
-    }
-</style>
 </body>
 </html>
